@@ -10,7 +10,7 @@
         Title="RoslynAvaloniaTask"
         Background="Transparent"
         TransparencyLevelHint="AcrylicBlur"
-        ExtendClientAreaToDecorationsHint="True">
+        ExtendClientAreaToDecorationsHint="False">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -18,37 +18,53 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
     
-    <StackPanel Orientation="Vertical">
-        <ExperimentalAcrylicBorder IsHitTestVisible="False">
-            <ExperimentalAcrylicBorder.Material>
-                <ExperimentalAcrylicMaterial
-                    BackgroundSource="Digger"
-                    TintColor="Black"
-                    TintOpacity="1"
-                    MaterialOpacity="0.65">
-                </ExperimentalAcrylicMaterial>
-            </ExperimentalAcrylicBorder.Material>
-        </ExperimentalAcrylicBorder>
+     <StackPanel Orientation="Vertical"
+                 Height="500"> 
+         <ExperimentalAcrylicBorder IsHitTestVisible="False"> 
+             <ExperimentalAcrylicBorder.Material> 
+                 <ExperimentalAcrylicMaterial 
+                     BackgroundSource="Digger" 
+                     TintColor="Black" 
+                     TintOpacity="1" 
+                     MaterialOpacity="0.65"> 
+                 </ExperimentalAcrylicMaterial> 
+             </ExperimentalAcrylicBorder.Material> 
+         </ExperimentalAcrylicBorder> 
     
-        <Button Content="Visualize Code"
-                VerticalAlignment="Top"
-                HorizontalAlignment="Center"
-                Margin="15 15 15 5"
-                Command="{Binding VisualizeCodeCommand}">
-        </Button>
-    
-        <TextBlock Margin="15 10 15 5">Insert your code:</TextBlock> <!-- Zmniejszenie marginesów TextBlocka -->
-    
-        <TextBox Height="200" AcceptsReturn="True" TextWrapping="Wrap"
-                 Margin="15 5 15 5"
-                 Watermark="Enter your code here"
-                 Text="{Binding CodeText, Mode=TwoWay}"
-        />
-    
-        <TextBox
-            Height="200"
-            Text="{Binding SyntaxTreeText}" Margin="15 5"
-        />
+         <Button Content="Visualize Code" 
+                 VerticalAlignment="Top" 
+                 HorizontalAlignment="Center" 
+                 Margin="15 15 15 5" 
+                 Command="{Binding VisualizeCodeCommand}"> 
+         </Button> 
+         
+         <Grid>
+             <Grid.RowDefinitions>
+                 <RowDefinition Height="500"/>
+             </Grid.RowDefinitions>
+             <Grid.ColumnDefinitions>
+                 <ColumnDefinition Width="*"/>
+                 <ColumnDefinition Width="*"/>
+             </Grid.ColumnDefinitions>
+
+             <!-- Your content here -->
+             
+             <TextBox AcceptsReturn="True" TextWrapping="Wrap" 
+                      Margin="15 5 15 5" 
+                      Watermark="Enter your code here" 
+                      Text="{Binding CodeText, Mode=TwoWay}" 
+                      Grid.Row="0"
+                      Grid.Column="0"
+                      VerticalAlignment="Stretch"
+             /> 
+             
+             <TextBox 
+                 Text="{Binding SyntaxTreeText}" Margin="15 5"
+                 Grid.Row="0"
+                 Grid.Column="1"
+                 VerticalAlignment="Stretch"
+             />
+         </Grid>
     </StackPanel>
     
 </Window>

@@ -30,6 +30,12 @@ public class MainWindowViewModel : ViewModelBase
         get => _syntaxTreeText;
         set => this.RaiseAndSetIfChanged(ref _syntaxTreeText, value);
     }
+    private int _windowHeight;
+    public int WindowHeight
+    {
+        get => _windowHeight;
+        set => this.RaiseAndSetIfChanged(ref _windowHeight, value);
+    }
     public ICommand VisualizeCodeCommand { get; }
 #pragma warning disable CA1822 // Mark members as static
     public string Greeting => "Welcome to Avalonia!";
@@ -40,60 +46,6 @@ public class MainWindowViewModel : ViewModelBase
             {
                 try
                 {
-                    //Console.WriteLine(CodeText);
-                    // SyntaxTree tree = CSharpSyntaxTree.ParseText(CodeText);
-                    // CompilationUnitSyntax root = tree.GetCompilationUnitRoot();
-                    //
-                    // StringWriter stringWriter = new StringWriter();
-                    // tree.GetRoot().WriteTo(stringWriter);
-                    //
-                    // SyntaxTreeText = "";
-                    // // SyntaxTreeText += stringWriter.ToString();
-                    //
-                    // string rootString = root.ToString();
-                    // var rootKind = root.Kind();
-                    // var rootKindString = rootKind.ToString();
-                    //
-                    // var children = root.ChildNodesAndTokens();
-                    //
-                    // foreach (var child in children)
-                    // {
-                    //     // Check if it's a node or token
-                    //     if (child.IsNode)
-                    //     {
-                    //         // If it's a node, you can cast it to SyntaxNode and further investigate
-                    //         SyntaxNode node = child.AsNode();
-                    //         SyntaxTreeText += $"Node: {node.Kind()}\n";
-                    //         Console.WriteLine($"Node: {node.Kind()}"); // Print the kind of the node
-                    //
-                    //         // If you want to recursively explore the children of this node, you can do so
-                    //         // For example:
-                    //         foreach (var grandChild in node.ChildNodesAndTokens())
-                    //         {
-                    //             if (grandChild.IsNode)
-                    //             {
-                    //                 SyntaxNode grandChildNode = grandChild.AsNode();
-                    //                 SyntaxTreeText += $"  - Node: {grandChildNode.Kind()}\n";
-                    //                 Console.WriteLine(
-                    //                     $"  - Node: {grandChildNode.Kind()}"); // Print the kind of the grandchild node
-                    //             }
-                    //             else
-                    //             {
-                    //                 SyntaxToken grandChildToken = grandChild.AsToken();
-                    //                 SyntaxTreeText += $"  - Token: {grandChildToken.Kind()}\n";
-                    //                 Console.WriteLine(
-                    //                     $"  - Token: {grandChildToken.Kind()}"); // Print the kind of the grandchild token
-                    //             }
-                    //         }
-                    //     }
-                    //     else
-                    //     {
-                    //         // If it's a token, you can cast it to SyntaxToken and further investigate
-                    //         SyntaxToken token = child.AsToken();
-                    //         SyntaxTreeText += $"Token: {token.Kind()}\n";
-                    //         Console.WriteLine($"Token: {token.Kind()}"); // Print the kind of the token
-                    //     }
-                    // }
                     Traverse();
                 }
                 catch (Exception e)
@@ -101,7 +53,7 @@ public class MainWindowViewModel : ViewModelBase
                     SyntaxTreeText = $"Error: {e.Message}";
                 }
             }
-            );
+        );
     }
 
     private void Traverse()
@@ -125,8 +77,24 @@ public class MainWindowViewModel : ViewModelBase
             var current = myStack.Pop();
             string currString = "";
             for (int i = 0; i < current.level; i++)
-                currString += "\t";
-            SyntaxTreeText += (currString + "\n");
+                currString += "|\t";
+            
+            // Check if it's a node or token
+            if (current.tokenOrNode.IsNode)
+            {
+                // If it's a node, you can cast it to SyntaxNode and further investigate
+                SyntaxNode node = current.tokenOrNode.AsNode();
+                currString += $"Node: [{node.Kind()}]\n";
+                SyntaxTreeText += currString + "\n";
+            }
+            else
+            {
+                 //If it's a token, you can cast it to SyntaxToken and further investigate
+                 SyntaxToken token = current.tokenOrNode.AsToken();
+                 currString += $"Token: [{token.Kind()}]\n";
+                SyntaxTreeText += currString + "\n";
+            }
+            
             foreach (var tokenOrNode in current.tokenOrNode.ChildNodesAndTokens())
             {
                 if (visitedSet.Add(tokenOrNode))
