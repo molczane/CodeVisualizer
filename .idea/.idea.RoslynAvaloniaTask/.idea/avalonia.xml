@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="RoslynAvaloniaTask/App.axaml" value="RoslynAvaloniaTask/RoslynAvaloniaTask.csproj" />
+        <entry key="RoslynAvaloniaTask/Icons.axaml" value="RoslynAvaloniaTask/RoslynAvaloniaTask.csproj" />
+        <entry key="RoslynAvaloniaTask/Views/MainWindow.axaml" value="RoslynAvaloniaTask/RoslynAvaloniaTask.csproj" />
+      </map>
+    </option>
+  </component>
+</project>
