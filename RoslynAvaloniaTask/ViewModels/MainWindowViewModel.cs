@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using ReactiveUI;
 using System.Windows.Input;
@@ -40,65 +41,60 @@ public class MainWindowViewModel : ViewModelBase
                 try
                 {
                     //Console.WriteLine(CodeText);
-                    SyntaxTree tree = CSharpSyntaxTree.ParseText(CodeText);
-                    CompilationUnitSyntax root = tree.GetCompilationUnitRoot();
-                    DisplayText = "";
-                    DisplayText += $"The tree is a {root.Kind()} node.\n";
-                    DisplayText += $"The tree has {root.Members.Count} elements in it.\n";
-                    DisplayText += $"The tree has {root.Usings.Count} using statements. They are:\n";
-                    foreach (UsingDirectiveSyntax element in root.Usings)
-                        DisplayText += $"\t{element.Name}\n";
-
-                    StringWriter stringWriter = new StringWriter();
-                    tree.GetRoot().WriteTo(stringWriter);
-
-                    SyntaxTreeText = "";
-                    // SyntaxTreeText += stringWriter.ToString();
-
-                    string rootString = root.ToString();
-                    var rootKind = root.Kind();
-                    var rootKindString = rootKind.ToString();
-                    
-                    var children = root.ChildNodesAndTokens();
-
-                    foreach (var child in children)
-                    {
-                        // Check if it's a node or token
-                        if (child.IsNode)
-                        {
-                            // If it's a node, you can cast it to SyntaxNode and further investigate
-                            SyntaxNode node = child.AsNode();
-                            SyntaxTreeText += $"Node: {node.Kind()}\n";
-                            Console.WriteLine($"Node: {node.Kind()}"); // Print the kind of the node
-
-                            // If you want to recursively explore the children of this node, you can do so
-                            // For example:
-                            foreach (var grandChild in node.ChildNodesAndTokens())
-                            {
-                                if (grandChild.IsNode)
-                                {
-                                    SyntaxNode grandChildNode = grandChild.AsNode();
-                                    SyntaxTreeText += $"  - Node: {grandChildNode.Kind()}\n";
-                                    Console.WriteLine(
-                                        $"  - Node: {grandChildNode.Kind()}"); // Print the kind of the grandchild node
-                                }
-                                else
-                                {
-                                    SyntaxToken grandChildToken = grandChild.AsToken();
-                                    SyntaxTreeText += $"  - Token: {grandChildToken.Kind()}\n";
-                                    Console.WriteLine(
-                                        $"  - Token: {grandChildToken.Kind()}"); // Print the kind of the grandchild token
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // If it's a token, you can cast it to SyntaxToken and further investigate
-                            SyntaxToken token = child.AsToken();
-                            SyntaxTreeText += $"Token: {token.Kind()}\n";
-                            Console.WriteLine($"Token: {token.Kind()}"); // Print the kind of the token
-                        }
-                    }
+                    // SyntaxTree tree = CSharpSyntaxTree.ParseText(CodeText);
+                    // CompilationUnitSyntax root = tree.GetCompilationUnitRoot();
+                    //
+                    // StringWriter stringWriter = new StringWriter();
+                    // tree.GetRoot().WriteTo(stringWriter);
+                    //
+                    // SyntaxTreeText = "";
+                    // // SyntaxTreeText += stringWriter.ToString();
+                    //
+                    // string rootString = root.ToString();
+                    // var rootKind = root.Kind();
+                    // var rootKindString = rootKind.ToString();
+                    //
+                    // var children = root.ChildNodesAndTokens();
+                    //
+                    // foreach (var child in children)
+                    // {
+                    //     // Check if it's a node or token
+                    //     if (child.IsNode)
+                    //     {
+                    //         // If it's a node, you can cast it to SyntaxNode and further investigate
+                    //         SyntaxNode node = child.AsNode();
+                    //         SyntaxTreeText += $"Node: {node.Kind()}\n";
+                    //         Console.WriteLine($"Node: {node.Kind()}"); // Print the kind of the node
+                    //
+                    //         // If you want to recursively explore the children of this node, you can do so
+                    //         // For example:
+                    //         foreach (var grandChild in node.ChildNodesAndTokens())
+                    //         {
+                    //             if (grandChild.IsNode)
+                    //             {
+                    //                 SyntaxNode grandChildNode = grandChild.AsNode();
+                    //                 SyntaxTreeText += $"  - Node: {grandChildNode.Kind()}\n";
+                    //                 Console.WriteLine(
+                    //                     $"  - Node: {grandChildNode.Kind()}"); // Print the kind of the grandchild node
+                    //             }
+                    //             else
+                    //             {
+                    //                 SyntaxToken grandChildToken = grandChild.AsToken();
+                    //                 SyntaxTreeText += $"  - Token: {grandChildToken.Kind()}\n";
+                    //                 Console.WriteLine(
+                    //                     $"  - Token: {grandChildToken.Kind()}"); // Print the kind of the grandchild token
+                    //             }
+                    //         }
+                    //     }
+                    //     else
+                    //     {
+                    //         // If it's a token, you can cast it to SyntaxToken and further investigate
+                    //         SyntaxToken token = child.AsToken();
+                    //         SyntaxTreeText += $"Token: {token.Kind()}\n";
+                    //         Console.WriteLine($"Token: {token.Kind()}"); // Print the kind of the token
+                    //     }
+                    // }
+                    Traverse();
                 }
                 catch (Exception e)
                 {
@@ -106,5 +102,40 @@ public class MainWindowViewModel : ViewModelBase
                 }
             }
             );
+    }
+
+    private void Traverse()
+    {
+        int level = 0;
+        /* initializing stack for DFS on a syntax tree */
+        Stack<(SyntaxNodeOrToken tokenOrNode, int level)> myStack =
+            new Stack<(SyntaxNodeOrToken tokenOrNode, int level)>();
+        HashSet<SyntaxNodeOrToken> visitedSet = new HashSet<SyntaxNodeOrToken>();
+        //Console.WriteLine(CodeText);
+        SyntaxTree tree = CSharpSyntaxTree.ParseText(CodeText);
+        CompilationUnitSyntax root = tree.GetCompilationUnitRoot();
+        
+        myStack.Push((root, 0));
+        visitedSet.Add(root);
+        
+        SyntaxTreeText = "";
+
+        while (myStack.Count != 0)
+        {
+            var current = myStack.Pop();
+            string currString = "";
+            for (int i = 0; i < current.level; i++)
+                currString += "\t";
+            SyntaxTreeText += (currString + "\n");
+            foreach (var tokenOrNode in current.tokenOrNode.ChildNodesAndTokens())
+            {
+                if (visitedSet.Add(tokenOrNode))
+                    myStack.Push((tokenOrNode, current.level + 1));
+            }
+        }
+        
+        string rootString = root.ToString();
+        var rootKind = root.Kind();
+        var rootKindString = rootKind.ToString();
     }
 }
