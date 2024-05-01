@@ -130,3 +130,11 @@
 /Users/ernestmolczan/dev/Internships/RoslynAvaloniaTask/RoslynAvaloniaTask/obj/Debug/net8.0/RoslynAvaloniaTask.genruntimeconfig.cache
 /Users/ernestmolczan/dev/Internships/RoslynAvaloniaTask/RoslynAvaloniaTask/obj/Debug/net8.0/ref/RoslynAvaloniaTask.dll
 /Users/ernestmolczan/dev/Internships/RoslynAvaloniaTask/RoslynAvaloniaTask/obj/Debug/net8.0/RoslynAvaloniaTask.sourcelink.json
+/Users/ernestmolczan/dev/Internships/RoslynAvaloniaTask/RoslynAvaloniaTask/bin/Debug/net8.0/AvaloniaEdit.dll
+/Users/ernestmolczan/dev/Internships/RoslynAvaloniaTask/RoslynAvaloniaTask/bin/Debug/net8.0/AvaloniaEdit.TextMate.dll
+/Users/ernestmolczan/dev/Internships/RoslynAvaloniaTask/RoslynAvaloniaTask/bin/Debug/net8.0/TextMateSharp.dll
+/Users/ernestmolczan/dev/Internships/RoslynAvaloniaTask/RoslynAvaloniaTask/bin/Debug/net8.0/TextMateSharp.Grammars.dll
+/Users/ernestmolczan/dev/Internships/RoslynAvaloniaTask/RoslynAvaloniaTask/bin/Debug/net8.0/runtimes/linux/native/libonigwrap.so
+/Users/ernestmolczan/dev/Internships/RoslynAvaloniaTask/RoslynAvaloniaTask/bin/Debug/net8.0/runtimes/osx/native/libonigwrap.dylib
+/Users/ernestmolczan/dev/Internships/RoslynAvaloniaTask/RoslynAvaloniaTask/bin/Debug/net8.0/runtimes/win-x64/native/onigwrap-x64.dll
+/Users/ernestmolczan/dev/Internships/RoslynAvaloniaTask/RoslynAvaloniaTask/bin/Debug/net8.0/runtimes/win-x86/native/onigwrap-x86.dll

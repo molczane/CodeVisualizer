@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "WjNBoZRneVWngIwRRGpBeJx6PgrMS/5HOnvMdM22bZbolOt7NO4nWNeJ6LgUJ3cDzWQRWUcgh/cgTq+zPwSW8A==",
+  "dgSpecHash": "bZuLA8CCNknkGLDa8GJq3xBPeglELh1mLND2+l580bgQP/b5AZK71jLdqBpkaJF5GzLVPo1QE/e+iaZ7W1vG8w==",
   "success": true,
   "projectFilePath": "/Users/ernestmolczan/dev/Internships/RoslynAvaloniaTask/RoslynAvaloniaTask/RoslynAvaloniaTask.csproj",
   "expectedPackageFiles": [
     "/Users/ernestmolczan/.nuget/packages/avalonia/11.0.10/avalonia.11.0.10.nupkg.sha512",
     "/Users/ernestmolczan/.nuget/packages/avalonia.angle.windows.natives/2.1.0.2023020321/avalonia.angle.windows.natives.2.1.0.2023020321.nupkg.sha512",
+    "/Users/ernestmolczan/.nuget/packages/avalonia.avaloniaedit/11.0.6/avalonia.avaloniaedit.11.0.6.nupkg.sha512",
     "/Users/ernestmolczan/.nuget/packages/avalonia.buildservices/0.0.29/avalonia.buildservices.0.0.29.nupkg.sha512",
     "/Users/ernestmolczan/.nuget/packages/avalonia.controls.colorpicker/11.0.10/avalonia.controls.colorpicker.11.0.10.nupkg.sha512",
     "/Users/ernestmolczan/.nuget/packages/avalonia.controls.datagrid/11.0.10/avalonia.controls.datagrid.11.0.10.nupkg.sha512",
@@ -21,6 +22,7 @@
     "/Users/ernestmolczan/.nuget/packages/avalonia.themes.simple/11.0.10/avalonia.themes.simple.11.0.10.nupkg.sha512",
     "/Users/ernestmolczan/.nuget/packages/avalonia.win32/11.0.10/avalonia.win32.11.0.10.nupkg.sha512",
     "/Users/ernestmolczan/.nuget/packages/avalonia.x11/11.0.10/avalonia.x11.11.0.10.nupkg.sha512",
+    "/Users/ernestmolczan/.nuget/packages/avaloniaedit.textmate/11.0.6/avaloniaedit.textmate.11.0.6.nupkg.sha512",
     "/Users/ernestmolczan/.nuget/packages/dynamicdata/7.9.5/dynamicdata.7.9.5.nupkg.sha512",
     "/Users/ernestmolczan/.nuget/packages/harfbuzzsharp/7.3.0/harfbuzzsharp.7.3.0.nupkg.sha512",
     "/Users/ernestmolczan/.nuget/packages/harfbuzzsharp.nativeassets.linux/7.3.0/harfbuzzsharp.nativeassets.linux.7.3.0.nupkg.sha512",
@@ -73,9 +75,13 @@
     "/Users/ernestmolczan/.nuget/packages/system.runtime.interopservices/4.3.0/system.runtime.interopservices.4.3.0.nupkg.sha512",
     "/Users/ernestmolczan/.nuget/packages/system.text.encoding/4.3.0/system.text.encoding.4.3.0.nupkg.sha512",
     "/Users/ernestmolczan/.nuget/packages/system.text.encoding.codepages/4.5.1/system.text.encoding.codepages.4.5.1.nupkg.sha512",
+    "/Users/ernestmolczan/.nuget/packages/system.text.encodings.web/7.0.0/system.text.encodings.web.7.0.0.nupkg.sha512",
+    "/Users/ernestmolczan/.nuget/packages/system.text.json/7.0.0/system.text.json.7.0.0.nupkg.sha512",
     "/Users/ernestmolczan/.nuget/packages/system.threading/4.3.0/system.threading.4.3.0.nupkg.sha512",
     "/Users/ernestmolczan/.nuget/packages/system.threading.tasks/4.3.0/system.threading.tasks.4.3.0.nupkg.sha512",
     "/Users/ernestmolczan/.nuget/packages/system.threading.tasks.extensions/4.5.4/system.threading.tasks.extensions.4.5.4.nupkg.sha512",
+    "/Users/ernestmolczan/.nuget/packages/textmatesharp/1.0.56/textmatesharp.1.0.56.nupkg.sha512",
+    "/Users/ernestmolczan/.nuget/packages/textmatesharp.grammars/1.0.56/textmatesharp.grammars.1.0.56.nupkg.sha512",
     "/Users/ernestmolczan/.nuget/packages/tmds.dbus.protocol/0.15.0/tmds.dbus.protocol.0.15.0.nupkg.sha512"
   ],
   "logs": []

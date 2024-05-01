@@ -3,6 +3,7 @@
         xmlns:vm="using:RoslynAvaloniaTask.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:avaloniaEdit="https://github.com/avaloniaui/avaloniaedit"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="RoslynAvaloniaTask.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -45,6 +46,7 @@
              <Grid.ColumnDefinitions>
                  <ColumnDefinition Width="*"/>
                  <ColumnDefinition Width="*"/>
+                 <ColumnDefinition Width="*"/>
              </Grid.ColumnDefinitions>
 
              <!-- Your content here -->
@@ -56,6 +58,8 @@
                       Grid.Row="0"
                       Grid.Column="0"
                       VerticalAlignment="Stretch"
+                      PointerMoved="InputElement_OnPointerMoved"
+                      x:Name="textBox"
              /> 
              
              <TextBox 
@@ -64,6 +68,14 @@
                  Grid.Column="1"
                  VerticalAlignment="Stretch"
              />
+             
+             <avaloniaEdit:TextEditor Text="Hello AvaloniaEdit!"
+                                      ShowLineNumbers="True"
+                                      FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
+                                      Grid.Row="0"
+                                      Grid.Column="2"
+                                      Margin="15 5"
+                                      x:Name="Editor"/>
          </Grid>
     </StackPanel>
     

@@ -42,6 +42,10 @@
               "target": "Package",
               "version": "[11.0.10, )"
             },
+            "Avalonia.AvaloniaEdit": {
+              "target": "Package",
+              "version": "[11.0.6, )"
+            },
             "Avalonia.Desktop": {
               "target": "Package",
               "version": "[11.0.10, )"
@@ -61,6 +65,14 @@
             "Avalonia.Themes.Fluent": {
               "target": "Package",
               "version": "[11.0.10, )"
+            },
+            "AvaloniaEdit.TextMate": {
+              "target": "Package",
+              "version": "[11.0.6, )"
+            },
+            "TextMateSharp.Grammars": {
+              "target": "Package",
+              "version": "[1.0.56, )"
             }
           },
           "imports": [

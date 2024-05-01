@@ -22,6 +22,8 @@
 /Users/ernestmolczan/.nuget/packages/avalonia.themes.simple/11.0.10/lib/net6.0/Avalonia.Themes.Simple.dll
 /Users/ernestmolczan/.nuget/packages/avalonia.win32/11.0.10/lib/net6.0/Avalonia.Win32.dll
 /Users/ernestmolczan/.nuget/packages/avalonia.x11/11.0.10/lib/net6.0/Avalonia.X11.dll
+/Users/ernestmolczan/.nuget/packages/avalonia.avaloniaedit/11.0.6/lib/net6.0/AvaloniaEdit.dll
+/Users/ernestmolczan/.nuget/packages/avaloniaedit.textmate/11.0.6/lib/net6.0/AvaloniaEdit.TextMate.dll
 /Users/ernestmolczan/.nuget/packages/dynamicdata/7.9.5/lib/net6.0/DynamicData.dll
 /Users/ernestmolczan/.nuget/packages/harfbuzzsharp/7.3.0/lib/net6.0/HarfBuzzSharp.dll
 /Users/ernestmolczan/.nuget/packages/microcom.runtime/0.11.0/lib/net5.0/MicroCom.Runtime.dll
@@ -196,5 +198,7 @@
 /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref/8.0.2/ref/net8.0/System.Xml.XmlSerializer.dll
 /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref/8.0.2/ref/net8.0/System.Xml.XPath.dll
 /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref/8.0.2/ref/net8.0/System.Xml.XPath.XDocument.dll
+/Users/ernestmolczan/.nuget/packages/textmatesharp/1.0.56/lib/netstandard2.0/TextMateSharp.dll
+/Users/ernestmolczan/.nuget/packages/textmatesharp.grammars/1.0.56/lib/netstandard2.0/TextMateSharp.Grammars.dll
 /Users/ernestmolczan/.nuget/packages/tmds.dbus.protocol/0.15.0/lib/net6.0/Tmds.DBus.Protocol.dll
 /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref/8.0.2/ref/net8.0/WindowsBase.dll
