@@ -129,3 +129,4 @@
 /Users/ernestmolczan/dev/Internships/RoslynAvaloniaTask/RoslynAvaloniaTask/obj/Debug/net8.0/RoslynAv.E185082C.Up2Date
 /Users/ernestmolczan/dev/Internships/RoslynAvaloniaTask/RoslynAvaloniaTask/obj/Debug/net8.0/RoslynAvaloniaTask.genruntimeconfig.cache
 /Users/ernestmolczan/dev/Internships/RoslynAvaloniaTask/RoslynAvaloniaTask/obj/Debug/net8.0/ref/RoslynAvaloniaTask.dll
+/Users/ernestmolczan/dev/Internships/RoslynAvaloniaTask/RoslynAvaloniaTask/obj/Debug/net8.0/RoslynAvaloniaTask.sourcelink.json
