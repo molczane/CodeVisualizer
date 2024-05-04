@@ -4,9 +4,11 @@ using System.IO;
 using ReactiveUI;
 using System.Windows.Input;
 using Avalonia.Controls.Primitives;
+using AvaloniaEdit;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoslynAvaloniaTask.Views;
 
 namespace RoslynAvaloniaTask.ViewModels;
 

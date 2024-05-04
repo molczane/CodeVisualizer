@@ -36,8 +36,10 @@
                  VerticalAlignment="Top" 
                  HorizontalAlignment="Center" 
                  Margin="15 15 15 5" 
-                 Command="{Binding VisualizeCodeCommand}"> 
+                 Click="Button_OnClick"> 
          </Button> 
+         
+         <!-- Command="{Binding VisualizeCodeCommand}" -->
          
          <Grid>
              <Grid.RowDefinitions>
@@ -46,36 +48,37 @@
              <Grid.ColumnDefinitions>
                  <ColumnDefinition Width="*"/>
                  <ColumnDefinition Width="*"/>
-                 <ColumnDefinition Width="*"/>
              </Grid.ColumnDefinitions>
 
              <!-- Your content here -->
              
-             <TextBox AcceptsReturn="True" TextWrapping="Wrap" 
-                      Margin="15 5 15 5" 
-                      Watermark="Enter your code here" 
-                      Text="{Binding CodeText, Mode=TwoWay}" 
-                      Grid.Row="0"
-                      Grid.Column="0"
-                      VerticalAlignment="Stretch"
-                      PointerMoved="InputElement_OnPointerMoved"
-                      x:Name="textBox"
-             /> 
+             <!-- <TextBox AcceptsReturn="True" TextWrapping="Wrap"  -->
+             <!--          Margin="15 5 15 5"  -->
+             <!--          Watermark="Enter your code here"  -->
+             <!--          Text="{Binding CodeText, Mode=TwoWay}"  -->
+             <!--          Grid.Row="0" -->
+             <!--          Grid.Column="2" -->
+             <!--          VerticalAlignment="Stretch" -->
+             <!--          PointerMoved="InputElement_OnPointerMoved" -->
+             <!--          x:Name="textBox" -->
+             <!-- />  -->
              
              <TextBox 
                  Text="{Binding SyntaxTreeText}" Margin="15 5"
                  Grid.Row="0"
                  Grid.Column="1"
                  VerticalAlignment="Stretch"
+                 x:Name="treeTextBox"
              />
              
-             <avaloniaEdit:TextEditor Text="Hello AvaloniaEdit!"
+             <avaloniaEdit:TextEditor Text="Hello World!"
                                       ShowLineNumbers="True"
                                       FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
                                       Grid.Row="0"
-                                      Grid.Column="2"
+                                      Grid.Column="0"
                                       Margin="15 5"
-                                      x:Name="Editor"/>
+                                      x:Name="Editor"
+                                      />
          </Grid>
     </StackPanel>
     
