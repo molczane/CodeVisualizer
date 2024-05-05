@@ -53,7 +53,7 @@ public partial class MainWindow : Window
         /* ADDING FUNCTIONALITIES TO TEXT EDITOR */
         _textEditor.TextArea.TextEntered += textEditor_TextArea_TextEntered;
         _textEditor.TextArea.TextEntering += textEditor_TextArea_TextEntering;
-        _textEditor.TextArea.Caret.PositionChanged += Caret_PositionChanged;
+        //_textEditor.TextArea.Caret.PositionChanged += Caret_PositionChanged; /* FUNCTIONALITY DISABLED FOR NOW */
         _textEditor.TextArea.RightClickMovesCaret = false;
         
         /* TRYING SOMETHING WITH LINE COLORIZING */
@@ -66,12 +66,17 @@ public partial class MainWindow : Window
         /* WORKING LINE SELECTING */
         int offset = _textEditor.CaretOffset;
         DocumentLine currentLine = _textEditor.Document.GetLineByOffset(offset);
+        //_textEditor.TextArea.ClearSelection();
+        /* SEE IF IT WORKS */
+        _textEditor.TextArea.SelectionBrush = new SolidColorBrush(Colors.Transparent, 1.00);
+        //_textEditor.TextArea.SelectionForeground = new SolidColorBrush(Colors.Aqua, 1.00);
+        _textEditor.TextArea.SelectionBorder = new Pen(Brushes.Red);
         _textEditor.Select(currentLine.Offset, currentLine.Length);
-        LineColorizer lineColorizer = new LineColorizer(currentLine.LineNumber);
+        //LineColorizer lineColorizer = new LineColorizer(currentLine.LineNumber);
         //lineColorizer.HighlightLine(currentLine);
         /* SEE IF IT WORKS - NO */
-        _textEditor.TextArea.TextView.LineTransformers.Add(new LineColorizer(currentLine.Offset));
-        _textEditor.TextArea.TextView.HighlightedLine = currentLine.LineNumber; 
+        // _textEditor.TextArea.TextView.LineTransformers.Add(new LineColorizer(currentLine.Offset));
+        // _textEditor.TextArea.TextView.HighlightedLine = currentLine.LineNumber; 
     }
     
      private void Button_OnClick(object? sender, RoutedEventArgs e)
