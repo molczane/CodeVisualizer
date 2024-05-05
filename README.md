@@ -61,6 +61,12 @@ Example 3 - double clicked Argument node:
 
 ![Zrzut ekranu 2024-05-5 o 23 26 21](https://github.com/molczane/CodeVisualizer/assets/128298715/ce090cae-6f6a-4d11-acb4-d616725a38af)
 
+**IMPORTANT**
+
+**If you change the code, you have to generate new tree to avoid errors!**
+
+**Further info**
+
 I also tried implementing code completion, but I didn't make it work.
 
 All the process of creating this program should be readable through commits.
