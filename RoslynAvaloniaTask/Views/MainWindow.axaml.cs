@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -10,6 +11,7 @@ using AvaloniaEdit;
 using AvaloniaEdit.CodeCompletion;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.Editing;
+using AvaloniaEdit.Highlighting;
 using AvaloniaEdit.Rendering;
 using AvaloniaEdit.TextMate;
 using Microsoft.CodeAnalysis;
@@ -29,7 +31,8 @@ public partial class MainWindow : Window
     private CompletionWindow _completionWindow;
     private OverloadInsightWindow _insightWindow;
     /* Line Colorizer */
-    private UnderlineAndStrikeThroughTransformer _lineColorizer = new UnderlineAndStrikeThroughTransformer();
+    //private LineColorizer _lineColorizer = new LineColorizer();
+    private int _currentLineNumber;
     public MainWindow()
     {
         InitializeComponent();
@@ -39,6 +42,7 @@ public partial class MainWindow : Window
         _textEditor.Background = Brushes.Transparent;
         _textEditor.ShowLineNumbers = true;
         _registryOptions = new TextMateSharp.Grammars.RegistryOptions(ThemeName.DarkPlus);
+        _textEditor.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
         
         var _textMateInstallation = _textEditor.InstallTextMate(_registryOptions);
 
@@ -49,10 +53,27 @@ public partial class MainWindow : Window
         /* ADDING FUNCTIONALITIES TO TEXT EDITOR */
         _textEditor.TextArea.TextEntered += textEditor_TextArea_TextEntered;
         _textEditor.TextArea.TextEntering += textEditor_TextArea_TextEntering;
-        //_textEditor.TextArea.Caret.PositionChanged += Caret_PositionChanged;
-        _textEditor.TextArea.RightClickMovesCaret = true;
+        _textEditor.TextArea.Caret.PositionChanged += Caret_PositionChanged;
+        _textEditor.TextArea.RightClickMovesCaret = false;
+        
+        /* TRYING SOMETHING WITH LINE COLORIZING */
+        int offset = _textEditor.CaretOffset;
+        DocumentLine currentLine = _textEditor.Document.GetLineByOffset(offset);
     }
-
+    
+    private void Caret_PositionChanged(object sender, EventArgs e)
+    {
+        /* WORKING LINE SELECTING */
+        int offset = _textEditor.CaretOffset;
+        DocumentLine currentLine = _textEditor.Document.GetLineByOffset(offset);
+        _textEditor.Select(currentLine.Offset, currentLine.Length);
+        LineColorizer lineColorizer = new LineColorizer(currentLine.LineNumber);
+        //lineColorizer.HighlightLine(currentLine);
+        /* SEE IF IT WORKS - NO */
+        _textEditor.TextArea.TextView.LineTransformers.Add(new LineColorizer(currentLine.Offset));
+        _textEditor.TextArea.TextView.HighlightedLine = currentLine.LineNumber; 
+    }
+    
      private void Button_OnClick(object? sender, RoutedEventArgs e)
     {
         Traverse();
@@ -175,7 +196,9 @@ public partial class MainWindow : Window
 
         int offset = _textEditor.CaretOffset;
         DocumentLine currentLine = _textEditor.Document.GetLineByOffset(offset);
-        //_lineColorizer.HighlightLine(currentLine);
+
+       
+        //_lineColorizer.HighlightLine(currentLine)
     }
     
     public class MyCompletionData : ICompletionData
@@ -242,64 +265,32 @@ public partial class MainWindow : Window
     }
     /* CODE COMPLETION - NOT WORKING */
     
-    class UnderlineAndStrikeThroughTransformer : DocumentColorizingTransformer
+    public class LineColorizer : DocumentColorizingTransformer
+    {
+        public void HighlightLine(DocumentLine line)
         {
-            public void HighlightLine(DocumentLine line)
-            {
-                ColorizeLine(line);
-            }
-            protected override void ColorizeLine(DocumentLine line)
-            {
-                if (line.LineNumber == 2)
-                {
-                    string lineText = this.CurrentContext.Document.GetText(line);
+            ColorizeLine(line);
+        }
+        
+        int lineNumber;
 
-                    int indexOfUnderline = lineText.IndexOf("underline");
-                    int indexOfStrikeThrough = lineText.IndexOf("strikethrough");
+        public LineColorizer(int lineNumber)
+        {
+            this.lineNumber = lineNumber;
+        }
 
-                    if (indexOfUnderline != -1)
-                    {
-                        ChangeLinePart(
-                            line.Offset + indexOfUnderline,
-                            line.Offset + indexOfUnderline + "underline".Length,
-                            visualLine =>
-                            {
-                                if (visualLine.TextRunProperties.TextDecorations != null)
-                                {
-                                    var textDecorations = new TextDecorationCollection(visualLine.TextRunProperties.TextDecorations) { TextDecorations.Underline[0] };
-
-                                    visualLine.TextRunProperties.SetTextDecorations(textDecorations);
-                                }
-                                else
-                                {
-                                    visualLine.TextRunProperties.SetTextDecorations(TextDecorations.Underline);
-                                }
-                            }
-                        );
-                    }
-
-                    if (indexOfStrikeThrough != -1)
-                    {
-                        ChangeLinePart(
-                            line.Offset + indexOfStrikeThrough,
-                            line.Offset + indexOfStrikeThrough + "strikethrough".Length,
-                            visualLine =>
-                            {
-                                if (visualLine.TextRunProperties.TextDecorations != null)
-                                {
-                                    var textDecorations = new TextDecorationCollection(visualLine.TextRunProperties.TextDecorations) { TextDecorations.Strikethrough[0] };
-
-                                    visualLine.TextRunProperties.SetTextDecorations(textDecorations);
-                                }
-                                else
-                                {
-                                    visualLine.TextRunProperties.SetTextDecorations(TextDecorations.Strikethrough);
-                                }
-                            }
-                        );
-                    }
-                }
+        protected override void ColorizeLine(DocumentLine line)
+        {
+            if (!line.IsDeleted && line.LineNumber == lineNumber) {
+                ChangeLinePart(line.Offset, line.Length, ApplyChanges);
             }
         }
+
+        void ApplyChanges(VisualLineElement element)
+        {
+            // This is where you do anything with the line
+            element.TextRunProperties.SetForegroundBrush(Brushes.Red);
+        }
+    }
     
 }

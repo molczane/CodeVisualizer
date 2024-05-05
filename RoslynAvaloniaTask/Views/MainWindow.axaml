@@ -78,6 +78,7 @@
                                       Grid.Column="0"
                                       Margin="15 5"
                                       x:Name="Editor"
+                                      SyntaxHighlighting="C#"
                                       />
          </Grid>
     </StackPanel>
