@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RoslynAvaloniaTask")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0b858a340b8c068dde47d52b1f62787ae1d09bb8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f0721b1368f388a72438564796eda8045f86d086")]
 [assembly: System.Reflection.AssemblyProductAttribute("RoslynAvaloniaTask")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RoslynAvaloniaTask")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

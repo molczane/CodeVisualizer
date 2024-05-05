@@ -16,6 +16,7 @@ using AvaloniaEdit.TextMate;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 using TextMateSharp.Grammars;
 
 namespace RoslynAvaloniaTask.Views;
@@ -68,9 +69,34 @@ public partial class MainWindow : Window
         DocumentLine currentLine = _textEditor.Document.GetLineByOffset(offset);
     }
 
-    private void OnTreeCaretEvent(object sender, EventArgs e) /* CARET EVENT HANDLER */
+    private void OnTreeCaretEvent(object sender, SyntaxTreeCaretEventArgs e) /* CARET EVENT HANDLER */
     {
-        _textEditor.Text += "CHUJ";
+        SyntaxNodeOrToken nodeOrToken = e.NodeOrToken;
+        int lineNumberInFile = e.LineNumber;
+
+        SyntaxNode? node = null;
+        SyntaxToken? token = null;
+        if (nodeOrToken.IsNode)
+            node = nodeOrToken.AsNode();
+        if (nodeOrToken.IsToken)
+            token = nodeOrToken.AsToken();
+
+        SourceText? sourceText = null;
+        string? text = null;
+        if (node != null)
+        {
+            sourceText = node.GetText();
+            text = sourceText.ToString();
+        }
+        if (token != null)
+        {
+            text = token.ToString();
+        }
+        
+        /* WE HAVE TOKEN OR NODE TEXT  - NOW TIME TO HIGHLIGHT IT IN THE CODE EDITOR */
+        
+        
+        Console.WriteLine(text);
     }
 
     private void TreeTextBoxOnPointerMoved(object? sender, PointerEventArgs e)
@@ -93,7 +119,7 @@ public partial class MainWindow : Window
                 if (_currentLineNumber != lineNumber)
                 {
                     /* GENERATING EVENT */
-                    SyntaxTreeCaretEventArgs args = new SyntaxTreeCaretEventArgs(nodeOrToken);
+                    SyntaxTreeCaretEventArgs args = new SyntaxTreeCaretEventArgs(nodeOrToken, lineNumberInFile);
                     _treeCaretEvent?.Invoke(this, args);
                     
                     /* DEBUGGING */
@@ -130,10 +156,14 @@ public partial class MainWindow : Window
      private void Button_OnClick(object? sender, RoutedEventArgs e)
     {
         Traverse();
+        Console.WriteLine("Traversing tree...\n");
     }
     
     private void Traverse()
     {
+        _treeTextBox.Clear();
+        linesToNodes = new Dictionary<int, SyntaxNodeOrToken>(); // setting new instance 
+        
         int line = 0;
         int level = 0;
         /* initializing stack for DFS on a syntax tree */
@@ -186,6 +216,25 @@ public partial class MainWindow : Window
         // Update current line highlight when caret index changes
     }
     
+    public class SyntaxTreeCaretEventArgs : EventArgs
+    {
+        // Property to hold custom data
+        public SyntaxNodeOrToken NodeOrToken { get; }
+        public int LineNumber { get; }
+        
+        // Constructor to initialize custom data
+        public SyntaxTreeCaretEventArgs(SyntaxNodeOrToken nodeOrToken, int lineNumber)
+        {
+            NodeOrToken = nodeOrToken;
+            LineNumber = lineNumber;
+        }
+    }
+    
+    public delegate void SyntaxTreeCaretEvent(object sender, SyntaxTreeCaretEventArgs e);
+    
+    /* -------------------------------------------------------------------------------------------------------------- */
+    /* ------------------------------------------- NOT RELEVANT ----------------------------------------------------- */
+    /* -------------------------------------------------------------------------------------------------------------- */
     
     /* CODE COMPLETION - NOT WORKING */
     private void textEditor_TextArea_TextEntering(object sender, TextInputEventArgs e)
@@ -315,47 +364,4 @@ public partial class MainWindow : Window
         }
     }
     /* CODE COMPLETION - NOT WORKING */
-    
-    public class LineColorizer : DocumentColorizingTransformer
-    {
-        public void HighlightLine(DocumentLine line)
-        {
-            ColorizeLine(line);
-        }
-        
-        int lineNumber;
-
-        public LineColorizer(int lineNumber)
-        {
-            this.lineNumber = lineNumber;
-        }
-
-        protected override void ColorizeLine(DocumentLine line)
-        {
-            if (!line.IsDeleted && line.LineNumber == lineNumber) {
-                ChangeLinePart(line.Offset, line.Length, ApplyChanges);
-            }
-        }
-
-        void ApplyChanges(VisualLineElement element)
-        {
-            // This is where you do anything with the line
-            element.TextRunProperties.SetForegroundBrush(Brushes.Red);
-        }
-    }
-    
-    public class SyntaxTreeCaretEventArgs : EventArgs
-    {
-        // Property to hold custom data
-        public SyntaxNodeOrToken NodeOrToken { get; }
-
-        // Constructor to initialize custom data
-        public SyntaxTreeCaretEventArgs(SyntaxNodeOrToken nodeOrToken)
-        {
-            NodeOrToken = nodeOrToken;
-        }
-    }
-    
-    public delegate void SyntaxTreeCaretEvent(object sender, EventArgs e);
-    
 }
