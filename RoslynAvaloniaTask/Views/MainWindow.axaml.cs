@@ -61,10 +61,16 @@ public partial class MainWindow : Window
         /* ADDING FUNCTIONALITIES TO SYNTAX TREE TEXT BOX */
         _treeTextBox.IsReadOnly = true;
         _treeTextBox.PointerMoved += TreeTextBoxOnPointerMoved; 
-            
+        _treeCaretEvent += OnTreeCaretEvent;
+        
         /* TRYING SOMETHING WITH LINE COLORIZING */
         int offset = _textEditor.CaretOffset;
         DocumentLine currentLine = _textEditor.Document.GetLineByOffset(offset);
+    }
+
+    private void OnTreeCaretEvent(object sender, EventArgs e) /* CARET EVENT HANDLER */
+    {
+        _textEditor.Text += "CHUJ";
     }
 
     private void TreeTextBoxOnPointerMoved(object? sender, PointerEventArgs e)
@@ -86,8 +92,13 @@ public partial class MainWindow : Window
                 
                 if (_currentLineNumber != lineNumber)
                 {
+                    /* GENERATING EVENT */
+                    SyntaxTreeCaretEventArgs args = new SyntaxTreeCaretEventArgs(nodeOrToken);
+                    _treeCaretEvent?.Invoke(this, args);
+                    
+                    /* DEBUGGING */
                     _currentLineNumber = lineNumber;
-                    Console.WriteLine($"Line number in file: {lineNumberInFile}\n");
+                    Console.WriteLine($"Line number in file: {lineNumberInFile + 1}\n");
                 }
             }
             catch (Exception exception)
@@ -237,8 +248,7 @@ public partial class MainWindow : Window
 
         int offset = _textEditor.CaretOffset;
         DocumentLine currentLine = _textEditor.Document.GetLineByOffset(offset);
-
-       
+        
         //_lineColorizer.HighlightLine(currentLine)
     }
     
@@ -337,12 +347,12 @@ public partial class MainWindow : Window
     public class SyntaxTreeCaretEventArgs : EventArgs
     {
         // Property to hold custom data
-        public int LineNumber { get; }
+        public SyntaxNodeOrToken NodeOrToken { get; }
 
         // Constructor to initialize custom data
-        public SyntaxTreeCaretEventArgs(int lineNumber)
+        public SyntaxTreeCaretEventArgs(SyntaxNodeOrToken nodeOrToken)
         {
-            LineNumber = lineNumber;
+            NodeOrToken = nodeOrToken;
         }
     }
     
