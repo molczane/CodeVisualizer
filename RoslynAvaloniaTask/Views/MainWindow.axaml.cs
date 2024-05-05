@@ -65,7 +65,7 @@ public partial class MainWindow : Window
         
         /* ADDING FUNCTIONALITIES TO SYNTAX TREE TEXT BOX */
         _treeTextBox.IsReadOnly = true;
-        _treeTextBox.PointerMoved += TreeTextBoxOnPointerMoved; 
+        //_treeTextBox.PointerMoved += TreeTextBoxOnPointerMoved; -- LETS SEE WHAT HAPPENS
         _treeCaretEvent += OnTreeCaretEvent;
         
         /* TRYING SOMETHING WITH LINE COLORIZING */
@@ -80,6 +80,8 @@ public partial class MainWindow : Window
         this.SizeChanged += OnSizeChanged;
         stackPanel = this.FindControl<StackPanel>("StackPanel");
         grid = this.FindControl<Grid>("Grid");
+
+        _treeTextBox.DoubleTapped += TreeTextBoxOnDoubleTapped;
     }
 
     private void OnSizeChanged(object? sender, SizeChangedEventArgs e)
@@ -171,9 +173,8 @@ public partial class MainWindow : Window
         }
     }
     
-    private void TreeTextBoxOnPointerMoved(object? sender, PointerEventArgs e)
+    private void TreeTextBoxOnDoubleTapped(object? sender, EventArgs e)
     {
-        _treeTextBox.Focus();
         
         int caretIndex = _treeTextBox.CaretIndex;
         if (_treeTextBox.Text != null)
