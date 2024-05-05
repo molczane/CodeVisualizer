@@ -67,12 +67,13 @@ public partial class MainWindow : Window
         /* TRYING SOMETHING WITH LINE COLORIZING */
         int offset = _textEditor.CaretOffset;
         DocumentLine currentLine = _textEditor.Document.GetLineByOffset(offset);
+        
     }
 
     private void OnTreeCaretEvent(object sender, SyntaxTreeCaretEventArgs e) /* CARET EVENT HANDLER */
     {
         SyntaxNodeOrToken nodeOrToken = e.NodeOrToken;
-        int lineNumberInFile = e.LineNumber;
+        //int lineNumberInFile = e.LineNumber;
 
         SyntaxNode? node = null;
         SyntaxToken? token = null;
@@ -94,11 +95,45 @@ public partial class MainWindow : Window
         }
         
         /* WE HAVE TOKEN OR NODE TEXT  - NOW TIME TO HIGHLIGHT IT IN THE CODE EDITOR */
+        FileLinePositionSpan span = nodeOrToken.SyntaxTree.GetLineSpan(nodeOrToken.Span);
+                
+        int startLine = span.StartLinePosition.Line;
+        int endLine = span.EndLinePosition.Line;
         
+        /* CHANGING THE SELECTING APPEREANCE */
+        _textEditor.TextArea.SelectionBrush = new SolidColorBrush(Colors.Transparent, 1.00);
+        //_textEditor.TextArea.SelectionForeground = new SolidColorBrush(Colors.Aqua, 1.00);
+        _textEditor.TextArea.SelectionBorder = new Pen(Brushes.Red);
+        
+        /* Let's check if this is something longer or just "one-liner" */
+        if (startLine != endLine)
+        {
+            /* we have to select multiple lines */
+            int startOffset = _textEditor.Document.GetOffset(startLine + 1, 0);
+            DocumentLine endDocumentLine = _textEditor.Document.GetLineByNumber(endLine + 1);
+            int endOffset = _textEditor.Document.GetOffset(endLine + 1, 0) + endDocumentLine.Length;
+            _textEditor.Select(startOffset, endDocumentLine.EndOffset - startOffset);
+        }
         
         Console.WriteLine(text);
     }
-
+    
+    private void Caret_PositionChanged(object sender, EventArgs e)
+    {
+        /* WORKING LINE SELECTING */
+        int offset = _textEditor.CaretOffset;
+        DocumentLine currentLine = _textEditor.Document.GetLineByOffset(offset);
+        //_textEditor.TextArea.ClearSelection();
+        /* SEE IF IT WORKS */
+        
+        _textEditor.Select(currentLine.Offset, currentLine.Length);
+        //LineColorizer lineColorizer = new LineColorizer(currentLine.LineNumber);
+        //lineColorizer.HighlightLine(currentLine);
+        /* SEE IF IT WORKS - NO */
+        // _textEditor.TextArea.TextView.LineTransformers.Add(new LineColorizer(currentLine.Offset));
+        // _textEditor.TextArea.TextView.HighlightedLine = currentLine.LineNumber; 
+    }
+    
     private void TreeTextBoxOnPointerMoved(object? sender, PointerEventArgs e)
     {
         int caretIndex = _treeTextBox.CaretIndex;
@@ -133,24 +168,6 @@ public partial class MainWindow : Window
                 //throw;
             }
         }
-    }
-
-    private void Caret_PositionChanged(object sender, EventArgs e)
-    {
-        /* WORKING LINE SELECTING */
-        int offset = _textEditor.CaretOffset;
-        DocumentLine currentLine = _textEditor.Document.GetLineByOffset(offset);
-        //_textEditor.TextArea.ClearSelection();
-        /* SEE IF IT WORKS */
-        _textEditor.TextArea.SelectionBrush = new SolidColorBrush(Colors.Transparent, 1.00);
-        //_textEditor.TextArea.SelectionForeground = new SolidColorBrush(Colors.Aqua, 1.00);
-        _textEditor.TextArea.SelectionBorder = new Pen(Brushes.Red);
-        _textEditor.Select(currentLine.Offset, currentLine.Length);
-        //LineColorizer lineColorizer = new LineColorizer(currentLine.LineNumber);
-        //lineColorizer.HighlightLine(currentLine);
-        /* SEE IF IT WORKS - NO */
-        // _textEditor.TextArea.TextView.LineTransformers.Add(new LineColorizer(currentLine.Offset));
-        // _textEditor.TextArea.TextView.HighlightedLine = currentLine.LineNumber; 
     }
     
      private void Button_OnClick(object? sender, RoutedEventArgs e)
