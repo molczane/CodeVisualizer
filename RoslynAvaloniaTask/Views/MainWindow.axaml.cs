@@ -11,7 +11,6 @@ using AvaloniaEdit;
 using AvaloniaEdit.CodeCompletion;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.Editing;
-using AvaloniaEdit.Highlighting;
 using AvaloniaEdit.Rendering;
 using AvaloniaEdit.TextMate;
 using Microsoft.CodeAnalysis;
@@ -33,6 +32,9 @@ public partial class MainWindow : Window
     /* Line Colorizer */
     //private LineColorizer _lineColorizer = new LineColorizer();
     private int _currentLineNumber;
+    /* FIELDS CONNECTED WITH SYNTAX TREE TEXT BOX */
+    private Dictionary<int, SyntaxNodeOrToken> linesToNodes = new Dictionary<int, SyntaxNodeOrToken>();
+    private SyntaxTreeCaretEvent _treeCaretEvent;
     public MainWindow()
     {
         InitializeComponent();
@@ -56,11 +58,46 @@ public partial class MainWindow : Window
         //_textEditor.TextArea.Caret.PositionChanged += Caret_PositionChanged; /* FUNCTIONALITY DISABLED FOR NOW */
         _textEditor.TextArea.RightClickMovesCaret = false;
         
+        /* ADDING FUNCTIONALITIES TO SYNTAX TREE TEXT BOX */
+        _treeTextBox.IsReadOnly = true;
+        _treeTextBox.PointerMoved += TreeTextBoxOnPointerMoved; 
+            
         /* TRYING SOMETHING WITH LINE COLORIZING */
         int offset = _textEditor.CaretOffset;
         DocumentLine currentLine = _textEditor.Document.GetLineByOffset(offset);
     }
-    
+
+    private void TreeTextBoxOnPointerMoved(object? sender, PointerEventArgs e)
+    {
+        int caretIndex = _treeTextBox.CaretIndex;
+        if (_treeTextBox.Text != null)
+        {
+            try
+            {
+                string textBeforeCaret = _treeTextBox.Text.Substring(0, caretIndex);
+                int lineNumber = textBeforeCaret.Split('\n').Length;
+                lineNumber--;
+                
+                /* GETTING CORESPONDING NODE AND LINE NUMBER IN SOURCE CODE */
+                SyntaxNodeOrToken nodeOrToken = linesToNodes[lineNumber];
+                FileLinePositionSpan span = nodeOrToken.SyntaxTree.GetLineSpan(nodeOrToken.Span);
+                
+                int lineNumberInFile = span.StartLinePosition.Line;
+                
+                if (_currentLineNumber != lineNumber)
+                {
+                    _currentLineNumber = lineNumber;
+                    Console.WriteLine($"Line number in file: {lineNumberInFile}\n");
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                //throw;
+            }
+        }
+    }
+
     private void Caret_PositionChanged(object sender, EventArgs e)
     {
         /* WORKING LINE SELECTING */
@@ -86,6 +123,7 @@ public partial class MainWindow : Window
     
     private void Traverse()
     {
+        int line = 0;
         int level = 0;
         /* initializing stack for DFS on a syntax tree */
         Stack<(SyntaxNodeOrToken tokenOrNode, int level)> myStack =
@@ -97,6 +135,7 @@ public partial class MainWindow : Window
         
         myStack.Push((root, 0));
         visitedSet.Add(root);
+        //linesToNodes.Add(line++, root); // not needed
         
         _treeTextBox.Text = "";
 
@@ -113,15 +152,16 @@ public partial class MainWindow : Window
                 // If it's a node, you can cast it to SyntaxNode and further investigate
                 SyntaxNode node = current.tokenOrNode.AsNode();
                 currString += $"Node: [{node.Kind()}]\n";
-                _treeTextBox.Text += currString + "\n";
+                _treeTextBox.Text += currString;
             }
             else
             {
                 //If it's a token, you can cast it to SyntaxToken and further investigate
                 SyntaxToken token = current.tokenOrNode.AsToken();
                 currString += $"Token: [{token.Kind()}]\n";
-                _treeTextBox.Text += currString + "\n";
+                _treeTextBox.Text += currString;
             }
+            linesToNodes.Add(line++, current.tokenOrNode);
             
             foreach (var tokenOrNode in current.tokenOrNode.ChildNodesAndTokens())
             {
@@ -129,10 +169,6 @@ public partial class MainWindow : Window
                     myStack.Push((tokenOrNode, current.level + 1));
             }
         }
-        
-        string rootString = root.ToString();
-        var rootKind = root.Kind();
-        var rootKindString = rootKind.ToString();
     }
     private void InputElement_OnPointerMoved(object? sender, PointerEventArgs e)
     {
@@ -297,5 +333,19 @@ public partial class MainWindow : Window
             element.TextRunProperties.SetForegroundBrush(Brushes.Red);
         }
     }
+    
+    public class SyntaxTreeCaretEventArgs : EventArgs
+    {
+        // Property to hold custom data
+        public int LineNumber { get; }
+
+        // Constructor to initialize custom data
+        public SyntaxTreeCaretEventArgs(int lineNumber)
+        {
+            LineNumber = lineNumber;
+        }
+    }
+    
+    public delegate void SyntaxTreeCaretEvent(object sender, EventArgs e);
     
 }
