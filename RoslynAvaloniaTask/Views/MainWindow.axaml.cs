@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
@@ -11,7 +12,6 @@ using AvaloniaEdit;
 using AvaloniaEdit.CodeCompletion;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.Editing;
-using AvaloniaEdit.Rendering;
 using AvaloniaEdit.TextMate;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -26,16 +26,20 @@ public partial class MainWindow : Window
     private readonly TextEditor _textEditor;
 
     private TextBox _treeTextBox;
-    //private RegistryOptions _registryOptions;
     private TextMateSharp.Grammars.RegistryOptions _registryOptions;
     private CompletionWindow _completionWindow;
     private OverloadInsightWindow _insightWindow;
-    /* Line Colorizer */
-    //private LineColorizer _lineColorizer = new LineColorizer();
-    private int _currentLineNumber;
+    
     /* FIELDS CONNECTED WITH SYNTAX TREE TEXT BOX */
     private Dictionary<int, SyntaxNodeOrToken> linesToNodes = new Dictionary<int, SyntaxNodeOrToken>();
     private SyntaxTreeCaretEvent _treeCaretEvent;
+    
+    /* HELPER FIELDS */
+    private StackPanel stackPanel;
+    private Grid grid;
+    
+    /* FOCUS STUFF */
+    private bool _hasTextTreeFocus;
     public MainWindow()
     {
         InitializeComponent();
@@ -68,9 +72,43 @@ public partial class MainWindow : Window
         int offset = _textEditor.CaretOffset;
         DocumentLine currentLine = _textEditor.Document.GetLineByOffset(offset);
         
+        /* FOCUS STUFF */
+        _textEditor.LostFocus += TextEditorOnLostFocus;
+        _textEditor.GotFocus += TextEditorOnGotFocus;
+        
+        /* MAIN WINDOW SIZE CHANGED EVENT */
+        this.SizeChanged += OnSizeChanged;
+        stackPanel = this.FindControl<StackPanel>("StackPanel");
+        grid = this.FindControl<Grid>("Grid");
     }
 
-    private void OnTreeCaretEvent(object sender, SyntaxTreeCaretEventArgs e) /* CARET EVENT HANDLER */
+    private void OnSizeChanged(object? sender, SizeChangedEventArgs e)
+    {
+        Size prevSize = e.PreviousSize;
+        Size newSize = e.NewSize;
+
+        if (prevSize.Width != 0 && prevSize.Height != 0)
+        {
+            double heightChange = newSize.Height - prevSize.Height;
+            stackPanel.Height += heightChange;
+            grid.Height += heightChange;
+            _treeTextBox.Height += heightChange;
+            _textEditor.Height += heightChange;
+        }
+    }
+
+    private void TextEditorOnGotFocus(object? sender, GotFocusEventArgs e)
+    {
+        _hasTextTreeFocus = true;
+    }
+
+    private void TextEditorOnLostFocus(object? sender, RoutedEventArgs e)
+    {
+        _hasTextTreeFocus = false;
+    }
+
+    /* CARET IN SYNTAX TREE TEXTBOX EVENT HANDLER */
+    private void OnTreeCaretEvent(object sender, SyntaxTreeCaretEventArgs e) 
     {
         SyntaxNodeOrToken nodeOrToken = e.NodeOrToken;
         //int lineNumberInFile = e.LineNumber;
@@ -97,45 +135,46 @@ public partial class MainWindow : Window
         /* WE HAVE TOKEN OR NODE TEXT  - NOW TIME TO HIGHLIGHT IT IN THE CODE EDITOR */
         FileLinePositionSpan span = nodeOrToken.SyntaxTree.GetLineSpan(nodeOrToken.Span);
                 
-        int startLine = span.StartLinePosition.Line;
-        int endLine = span.EndLinePosition.Line;
-        
-        /* CHANGING THE SELECTING APPEREANCE */
-        _textEditor.TextArea.SelectionBrush = new SolidColorBrush(Colors.Transparent, 1.00);
-        //_textEditor.TextArea.SelectionForeground = new SolidColorBrush(Colors.Aqua, 1.00);
-        _textEditor.TextArea.SelectionBorder = new Pen(Brushes.Red);
+        /* RETRIEVING LINE NUMBERS */
+        int startLine = span.StartLinePosition.Line + 1;
+        int endLine = span.EndLinePosition.Line + 1;
         
         /* Let's check if this is something longer or just "one-liner" */
         if (startLine != endLine)
         {
             /* we have to select multiple lines */
-            int startOffset = _textEditor.Document.GetOffset(startLine + 1, 0);
-            DocumentLine endDocumentLine = _textEditor.Document.GetLineByNumber(endLine + 1);
-            int endOffset = _textEditor.Document.GetOffset(endLine + 1, 0) + endDocumentLine.Length;
+            int startOffset = _textEditor.Document.GetOffset(startLine, 0);
+            DocumentLine endDocumentLine = _textEditor.Document.GetLineByNumber(endLine);
+            int endOffset = _textEditor.Document.GetOffset(endLine, 0) + endDocumentLine.Length;
             _textEditor.Select(startOffset, endDocumentLine.EndOffset - startOffset);
         }
-        
-        Console.WriteLine(text);
-    }
-    
-    private void Caret_PositionChanged(object sender, EventArgs e)
-    {
-        /* WORKING LINE SELECTING */
-        int offset = _textEditor.CaretOffset;
-        DocumentLine currentLine = _textEditor.Document.GetLineByOffset(offset);
-        //_textEditor.TextArea.ClearSelection();
-        /* SEE IF IT WORKS */
-        
-        _textEditor.Select(currentLine.Offset, currentLine.Length);
-        //LineColorizer lineColorizer = new LineColorizer(currentLine.LineNumber);
-        //lineColorizer.HighlightLine(currentLine);
-        /* SEE IF IT WORKS - NO */
-        // _textEditor.TextArea.TextView.LineTransformers.Add(new LineColorizer(currentLine.Offset));
-        // _textEditor.TextArea.TextView.HighlightedLine = currentLine.LineNumber; 
+        /* yeah - it's "one-liner" */
+        else
+        {
+            int startOffset;
+            int endOffset;
+            
+            DocumentLine line = _textEditor.Document.GetLineByNumber(startLine);
+
+            // Get the text of the line
+            string lineText = _textEditor.Document.GetText(line.Offset, line.Length);
+
+            // Find the index of the search string within the line
+            int index = lineText.IndexOf(text);
+            if (index != -1)
+            {
+                // Calculate the start and end offsets within the document
+                startOffset = line.Offset + index;
+                endOffset = startOffset + text.Length;
+                _textEditor.Select(startOffset, endOffset - startOffset);
+            }
+        }
     }
     
     private void TreeTextBoxOnPointerMoved(object? sender, PointerEventArgs e)
     {
+        _treeTextBox.Focus();
+        
         int caretIndex = _treeTextBox.CaretIndex;
         if (_treeTextBox.Text != null)
         {
@@ -151,21 +190,13 @@ public partial class MainWindow : Window
                 
                 int lineNumberInFile = span.StartLinePosition.Line;
                 
-                if (_currentLineNumber != lineNumber)
-                {
-                    /* GENERATING EVENT */
-                    SyntaxTreeCaretEventArgs args = new SyntaxTreeCaretEventArgs(nodeOrToken, lineNumberInFile);
-                    _treeCaretEvent?.Invoke(this, args);
-                    
-                    /* DEBUGGING */
-                    _currentLineNumber = lineNumber;
-                    Console.WriteLine($"Line number in file: {lineNumberInFile + 1}\n");
-                }
+                /* GENERATING EVENT */
+                SyntaxTreeCaretEventArgs args = new SyntaxTreeCaretEventArgs(nodeOrToken, lineNumberInFile);
+                _treeCaretEvent?.Invoke(this, args);
             }
             catch (Exception exception)
             {
                 Console.WriteLine(exception);
-                //throw;
             }
         }
     }
@@ -173,7 +204,6 @@ public partial class MainWindow : Window
      private void Button_OnClick(object? sender, RoutedEventArgs e)
     {
         Traverse();
-        Console.WriteLine("Traversing tree...\n");
     }
     
     private void Traverse()
@@ -253,7 +283,7 @@ public partial class MainWindow : Window
     /* ------------------------------------------- NOT RELEVANT ----------------------------------------------------- */
     /* -------------------------------------------------------------------------------------------------------------- */
     
-    /* CODE COMPLETION - NOT WORKING */
+                                        /* CODE COMPLETION - NOT WORKING */
     private void textEditor_TextArea_TextEntering(object sender, TextInputEventArgs e)
     {
         if (e.Text.Length > 0 && _completionWindow != null)
@@ -380,5 +410,5 @@ public partial class MainWindow : Window
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-    /* CODE COMPLETION - NOT WORKING */
+                                    /* END OF CODE COMPLETION - NOT WORKING */
 }

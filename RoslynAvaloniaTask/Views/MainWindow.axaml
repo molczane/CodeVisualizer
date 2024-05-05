@@ -9,9 +9,10 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="RoslynAvaloniaTask"
-        Background="Transparent"
+        Background="DimGray"
         TransparencyLevelHint="AcrylicBlur"
-        ExtendClientAreaToDecorationsHint="False">
+        ExtendClientAreaToDecorationsHint="False"
+        >
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -20,7 +21,8 @@
     </Design.DataContext>
     
      <StackPanel Orientation="Vertical"
-                 Height="500"> 
+                 Height="500"
+                 x:Name="StackPanel"> 
          <ExperimentalAcrylicBorder IsHitTestVisible="False"> 
              <ExperimentalAcrylicBorder.Material> 
                  <ExperimentalAcrylicMaterial 
@@ -35,13 +37,13 @@
          <Button Content="Visualize Code" 
                  VerticalAlignment="Top" 
                  HorizontalAlignment="Center" 
-                 Margin="15 15 15 5" 
                  Click="Button_OnClick"> 
          </Button> 
          
          <!-- Command="{Binding VisualizeCodeCommand}" -->
          
-         <Grid>
+         <Grid
+             x:Name="Grid">
              <Grid.RowDefinitions>
                  <RowDefinition Height="500"/>
              </Grid.RowDefinitions>
@@ -49,25 +51,22 @@
                  <ColumnDefinition Width="*"/>
                  <ColumnDefinition Width="*"/>
              </Grid.ColumnDefinitions>
-
-             <!-- Your content here -->
              
-             <!-- <TextBox AcceptsReturn="True" TextWrapping="Wrap"  -->
-             <!--          Margin="15 5 15 5"  -->
-             <!--          Watermark="Enter your code here"  -->
-             <!--          Text="{Binding CodeText, Mode=TwoWay}"  -->
-             <!--          Grid.Row="0" -->
-             <!--          Grid.Column="2" -->
-             <!--          VerticalAlignment="Stretch" -->
-             <!--          PointerMoved="InputElement_OnPointerMoved" -->
-             <!--          x:Name="textBox" -->
-             <!-- />  -->
+             <!-- <TextBox  -->
+             <!--     Text="{Binding SyntaxTreeText}" Margin="15 5" -->
+             <!--     Grid.Row="0" -->
+             <!--     Grid.Column="1" -->
+             <!--     VerticalAlignment="Stretch" -->
+             <!--     x:Name="treeTextBox" -->
+             <!-- /> -->
+             
              
              <TextBox 
                  Text="{Binding SyntaxTreeText}" Margin="15 5"
                  Grid.Row="0"
                  Grid.Column="1"
-                 VerticalAlignment="Stretch"
+                 VerticalAlignment="Top"
+                 Height="485"
                  x:Name="treeTextBox"
              />
              
@@ -79,6 +78,8 @@
                                       Margin="15 5"
                                       x:Name="Editor"
                                       SyntaxHighlighting="C#"
+                                      VerticalAlignment="Top"
+                                      Height="485"
                                       />
          </Grid>
     </StackPanel>
